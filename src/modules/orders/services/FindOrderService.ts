@@ -2,23 +2,27 @@ import { inject, injectable } from 'tsyringe';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 import ICustomersRepository from '@modules/customers/repositories/ICustomersRepository';
-import Order from '../infra/typeorm/entities/Order';
-import IOrdersRepository from '../repositories/IOrdersRepository';
+import Order from '@modules/orders/infra/typeorm/entities/Order';
+import IOrdersRepository from '@modules/orders/repositories/IOrdersRepository';
 
 interface IRequest {
   id: string;
 }
-
 @injectable()
 class FindOrderService {
   constructor(
+    @inject('OrdersRepository')
     private ordersRepository: IOrdersRepository,
+    @inject('ProductsRepository')
     private productsRepository: IProductsRepository,
+    @inject('CustomersRepository')
     private customersRepository: ICustomersRepository,
   ) {}
 
   public async execute({ id }: IRequest): Promise<Order | undefined> {
-    // TODO
+    const productsId = await this.ordersRepository.findById(id);
+
+    return productsId;
   }
 }
 
